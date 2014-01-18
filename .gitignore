@@ -1,0 +1,7 @@
+*.log
+*.aux
+*.fdb_latexmk
+*.dvi
+*.pdf
+*.gz
+*.sublime-workspace

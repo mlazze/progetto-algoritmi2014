@@ -1,0 +1,86 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english,italian]{babel}
+\usepackage[hmargin=2.5cm,vmargin=3.5cm, bottom=2cm]{geometry}
+\usepackage{fancyhdr}%
+\usepackage{amsfonts}
+\usepackage[]{algorithm2e}
+\pagestyle{fancy}% Change page style to fancy
+\fancyhf{}% Clear header/footer
+\fancyhead[C]{Michele Lazzeri | 822879}
+\fancyfoot[C]{\thepage}% \fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}% Default \headrulewidth is 0.4pt
+\renewcommand{\footrulewidth}{0.4pt}% Default \footrulewidth is 0pt
+\setlength{\parindent}{0pt}
+%inizio custom commands
+\newcommand{\grass}[1]{\textbf{#1}}
+%fine custom commands
+
+\begin{document}
+\section{Traduzione da Linguaggio di contesto a Linguaggio specifico}
+I "nucleotidi" {A,T,C,G} rappresentano un Alfabeto $\Sigma$. Una concatenazione di simboli dell'Alfabeto rappresenta una Stringa fr e nel contesto viene chiamato "Frammento di DNA". L'insieme di tutti i "Frammenti di DNA" ammissibili {\large F} rappresenta quindi il Linguaggio.
+
+Un "enzima" rappresenta una funzione $\epsilon\colon F\to F$. L'"insieme degli enzimi" $\varepsilon$ rappresenta quindi una classe di funzioni di questo tipo.
+
+Una "trasformazione" rappresenta il risultato di un prodotto di funzioni.
+
+Un "esperimento" rappresenta un insieme di stringhe fr e di enzimi $\epsilon$.
+
+La "durata" $\Delta$ rappresenta il numero massimo di funzioni applicabili per ogni Stringa fr in ogni esperimento.
+
+L'"energia richiesta in UEA" rappresenta una funzione peso che associa ad ogni "enzima" $\varepsilon$ un numero reale: $energia(\varepsilon)\colon\epsilon\to\mathbb{R_+}$
+\\Inoltre $\forall$ trasformazione t $=\{e_1,e_2,\dots,e_k\}$ abbiamo che $energia(t)=\sum_{j=1}^k energia(e_j)$
+
+\section{Implementazione}
+\subsection{Frammenti di Dna / Stringhe}
+Il metodo più semplice per immagazzinare le singole stringhe è quello di utilizzare degli array. Gli array:
+\begin{itemize}
+\item permettono un accesso diretto ad ogni singolo elemento (simbolo);
+\item richiedono uno spazio di memoria contenuto
+\item sono semplici da gestire e si adattano bene ad operazioni su stringhe. 
+\end{itemize}
+Una possibile struttura in C potrebbe essere composta in questo modo:
+\begin{verbatim}
+struct stringa {
+    nome char[50];
+    int lunghezza;
+}
+\end{verbatim} In questo modo è possibile inserire nuovi elementi alla fine dell'array senza dovere riallocare l'intera array (supponendo di non superare il limite dei 50 caratteri) in tempo O(1), il rovesciamento dell'array può essere effettuato tramite un array di appoggio in tempo O(n), l'eliminazione degli ultimi n elementi in un tempo O(1), l'eliminazione e l'inserimento di un elemento non alla fine dell'array possono comunque essere realizzati shiftando i vari elementi dell'array. La semplicità della struttura permette in ogni caso di implementare le varie funzioni (gli "enzimi") facilmente.
+
+\subsection{Libreria degli enzimi}
+La libreria degli enzimi raccoglie le varie funzioni disponibili per la manipolazione dei frammenti di DNA.
+Le due funzioni che devono essere servite da tale libreria sono char *enzima (char *nome\_{}enzima, char *frammento\_{}src ) e int energia\_{}enzima (char *nome\_{}enzima ).
+Tali funzioni possono essere implementate tramite un costrutto \begin{verbatim}
+    switch(nome_enzima) {
+        case A:
+        ...
+        case B:
+        ...
+    }
+\end{verbatim} oppure utilizzando un albero binario di ricerca. Quest'ultima opzione garantisce i seguenti benefici:
+\begin{itemize}
+\item Tempo di accesso proporzionale alla lunghezza dell'albero: tale tempo nel caso peggiore si rivela essere ugualmente $O(n)$, ma nel caso medio il tempo scende a $O(log(n))$, dove n è il numero di enzimi presenti.
+\item Tempo di inserimento in qualsiasi posizione: $O(n)$ nel caso peggiore, $O(log(n))$ nel caso medio
+\end{itemize} I singoli nodi possono essere strutture formate da un puntatore a funzione, una stringa identificatrice e un intero per l'energia richiesta.
+Per ridurre il tempo a $O(log(n))$ anche nel caso peggiore si potrebbe ricorrere a una struttura come un albero 2-3 o un B-albero.
+\subsection{Esperimento}
+L'intero esperimento può essere rappresentato tramite un grafo ordinato $G=<V,E>$ dove V sono i nodi (in questo caso le varie Stringhe / Frammenti di DNA) e E è un sottoinsieme del prodotto cartesiano $V\times V$ tale che $e = \{x,y\} \in E \iff \exists$ enzima $enz \mid enzima(enz,x)=y$
+Convenzioni utilizzate: \begin{itemize}
+\item L'energia necessaria per ogni enzima è rappresentata dal peso del lato. \item La possibilità che non ad un frammento non si attacchi nessun enzima viene "emulata" tramite un enzima nullo che restituisce lo stesso frammento. All'interno del grafo tale lato viene raffigurato tramite un cappio.
+
+\end{itemize}
+Ad esempio il grafo: ---INSERIRE GRAFO---
+Rappresenta la situazione per cui:
+\begin{itemize}\item "TCAATG" può diventare "GTAACT" tramite l'enzima Rovesciasi di peso 4(che "rovescia" i frammenti) \item "TCAATG" può diventare "CAATG" tramite l'enzima troncasi-1 di peso 7
+\item "GTAACT" può diventare "TCAATG" tramite l'enzima rovesciasi di peso 4
+\item "TCAATG" resta "TCAATG" senza applicazione di enzimi
+\item \dots
+\end{itemize}
+Il tempo determina il numero di lati e di frammenti, infatti partendo dai frammenti \{"TCA","CTA"\} e dall'enzima Insertasi-1C i grafi al tempo 1 e al tempo due sono i seguenti:
+--MOAR GRAPHS--
+
+\subsubsection{Inibizione enzimi}
+L'inibizione degli enzimi può essere implementata tramite un altro albero di ricerca binaria. Prima dell'avvio dell'esperimento, infatti, la situazione del grafo G è quella di avere un certo numero n di vertici e nessun lato. L'esperimento vero e proprio applica ad ogni vertice tutti gli enzimi contenuti in una struttura che deve essere riempita tramite le chiamate di aggiungi\_enzima. Invece di utilizzare una lista per tale struttura risulta comodo utilizzare un albero di ricerca binaria. Tale albero sarà formato da nodi che conterranno sia il nome dell'enzima, sia un valore booleano che rappresenta se l'enzima è attivo o inibito. In questo modo l'inibizione di un enzima avviene cercando all'interno di tale albero l'enzima e portando a false il valore booleano associato. L'utilizzo di un albero di ricerca binaria invece di una lista permette di velocizzare sia il processo di inibizione/rattivazione sia quello di inserimento.
+All'interno dei nodi di quest'albero è inoltre possibile inserire anche l'energia richiesta per l'attivazione di tale enzima: in questo modo, pur utilizzando una quantità maggiore di spazio (i dati relativi all'energia richiesta sono già disponibili nella libreria degli enzimi) rende più veloce l'accesso a tali informazioni. Infatti se n è il numero di enzimi a disposizione del professore e k è il numero di enzimi utilizzati in questo esperimento abbiamo che $1\le k \le n$.
+\end{document}
