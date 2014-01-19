@@ -32,8 +32,8 @@ La "durata" $\Delta$ rappresenta il numero massimo di funzioni applicabili per o
 L'"energia richiesta in UEA" rappresenta una funzione peso che associa ad ogni "enzima" $\varepsilon$ un numero reale: $energia(\varepsilon)\colon\epsilon\to\mathbb{R_+}$
 \\Inoltre $\forall$ trasformazione t $=\{e_1,e_2,\dots,e_k\}$ abbiamo che $energia(t)=\sum_{j=1}^k energia(e_j)$
 
-\section{Implementazione}
-\subsection{Frammenti di Dna / Stringhe}
+\section{Scelta delle strutture adatte}
+\subsection{Frammenti di Dna / Stringhe}\label{sec:fram}
 Il metodo più semplice per immagazzinare le singole stringhe è quello di utilizzare degli array. Gli array:
 \begin{itemize}
 \item permettono un accesso diretto ad ogni singolo elemento (simbolo);
@@ -77,10 +77,107 @@ Rappresenta la situazione per cui:
 \item "TCAATG" resta "TCAATG" senza applicazione di enzimi
 \item \dots
 \end{itemize}
-Il tempo determina il numero di lati e di frammenti, infatti partendo dai frammenti \{"TCA","CTA"\} e dall'enzima Insertasi-1C i grafi al tempo 1 e al tempo due sono i seguenti:
+Il tempo determina il numero di lati e di frammenti, infatti partendo dai frammenti \{"TCA","CTA"\} e dall'enzima Insertasi-1C i grafi al tempo 1 e al tempo 2 sono i seguenti:
 --MOAR GRAPHS--
+
+L'implementazione del grafo avviene tramite liste di adiacenza, con una variazione nella struttura usata per rappresentare i nodi, come spiegato nella sezione \ref{sec:nodi}.
 
 \subsubsection{Inibizione enzimi}
 L'inibizione degli enzimi può essere implementata tramite un altro albero di ricerca binaria. Prima dell'avvio dell'esperimento, infatti, la situazione del grafo G è quella di avere un certo numero n di vertici e nessun lato. L'esperimento vero e proprio applica ad ogni vertice tutti gli enzimi contenuti in una struttura che deve essere riempita tramite le chiamate di aggiungi\_enzima. Invece di utilizzare una lista per tale struttura risulta comodo utilizzare un albero di ricerca binaria. Tale albero sarà formato da nodi che conterranno sia il nome dell'enzima, sia un valore booleano che rappresenta se l'enzima è attivo o inibito. In questo modo l'inibizione di un enzima avviene cercando all'interno di tale albero l'enzima e portando a false il valore booleano associato. L'utilizzo di un albero di ricerca binaria invece di una lista permette di velocizzare sia il processo di inibizione/rattivazione sia quello di inserimento.
-All'interno dei nodi di quest'albero è inoltre possibile inserire anche l'energia richiesta per l'attivazione di tale enzima: in questo modo, pur utilizzando una quantità maggiore di spazio (i dati relativi all'energia richiesta sono già disponibili nella libreria degli enzimi) rende più veloce l'accesso a tali informazioni. Infatti se n è il numero di enzimi a disposizione del professore e k è il numero di enzimi utilizzati in questo esperimento abbiamo che $1\le k \le n$.
+
+All'interno dei nodi di quest'albero sarebbe inoltre possibile inserire anche l'energia richiesta per l'attivazione di tale enzima: in questo modo, pur utilizzando una quantità maggiore di spazio (i dati relativi all'energia richiesta sono già disponibili nella libreria degli enzimi) rende più veloce l'accesso a tali informazioni. Infatti se n è il numero di enzimi a disposizione del professore e k è il numero di enzimi utilizzati in questo esperimento abbiamo che $1\le k \le n$.
+
+\subsubsection{I nodi del grafo}\label{sec:nodi}
+L'algoritmo per la costruzione del grafo, dopo l'inserimento dei frammenti iniziali e degli enzimi ha una struttura generale del tipo
+
+\begin{algorithm}[H]
+\For{nodo v $\in$ V}{
+\For{enzima $\epsilon\in\varepsilon$}{
+z:= enzima($\epsilon$,v)\;
+a:= cerca(z)\;
+\uIf{$\exists$ z in V}{k:= puntatore al nodo preesistente che contiene z}
+\Else{crea nodo(z)\;
+k:= puntatore a tale nodo\;
+}
+L(v) := INSERISCI(($\epsilon$,k))\;
+}}
+\end{algorithm}
+Dove $\varepsilon$ è l'insieme degli enzimi inseriti nell'esperimento, V è l'insieme dei nodi, L(v) è la lista di adiacenza del nodo v.
+
+Data la necessità, dopo l'ottenimento del risultato della funzione enzima($\epsilon$,stringa), di cercare se tale risultato è già presente nella lista dei nodi (in modo tale da creare un lato dalla stringa di origine al risultato, risulta comodo utilizzare anche per la lista dei nodi un albero binario di ricerca, per ridurre tali tempi di ricerca.
+
+L'implementazione scelta per la creazione del grafo risulta quindi essere formata da una struttura contenente due puntatori, uno all'albero contenente i frammenti (il grafo orientato vero e proprio) e un altro verso l'albero contenente gli enzimi inseriti nell'esperimento 
+\begin{itemize}
+\item l'albero contenente i frammenti avrà dei nodi formati da 5 campi: 
+\begin{itemize}
+\item Il frammento di DNA, implementato come descritto in \ref{sec:fram};
+\item Due puntatori, uno al figlio sinistro e uno al figlio destro
+\item Un puntatore alla lista di adiacenza
+\item Un valore booleano che indica se tale nodo è stato visitato o meno (spiegazione in \ref(sec:esp))
+\end{itemize}
+\item l'albero contenente gli enzimi inseriti avrà dei nodi formati da 4 campi:
+\begin{itemize}
+\item Il nome dell'enzima
+\item Due puntatori, uno al figlio sinistro e uno al figlio destro
+\item Un valore booleano che indica se tale enzima è attivo o meno
+\end{itemize}
+\end{itemize}
+
+\section{Funzioni in pseudocodice}
+\subsection{Crea\_{}Nuovo}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Cerca\_{}Frammento}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Nuovo\_{}Frammento}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Nuovo\_{}Frammento\_{}vis}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Cerca\_{}Enzima}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Nuovo\_{}Enzima}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Cancella\_{}tutto}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Elimina\_{}Enzima}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Prepara\_{}Esperimento}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{esp}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Esperimento}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Enzimi}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Energia}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
+\subsection{Dijkstra}
+Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo rappresentante la non-interazione tra enzimi e frammenti
+\begin{algorithm}[H]
+\end{algorithm}
 \end{document}
