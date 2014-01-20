@@ -2,11 +2,14 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english,italian]{babel}
-\usepackage[hmargin=2.5cm,vmargin=3.5cm, bottom=2cm]{geometry}
+\usepackage[hmargin=2cm,vmargin=2cm, bottom=2cm]{geometry}
 \usepackage{fancyhdr}%
 \usepackage{amsfonts}
 \usepackage{graphicx}
 \usepackage[ruled]{algorithm2e}
+\usepackage{titling}
+
+\setlength{\droptitle}{-5em}   % This is your set screw
 \pagestyle{fancy}% Change page style to fancy
 \fancyhf{}% Clear header/footer
 \fancyhead[C]{Michele Lazzeri | 822879}
@@ -19,6 +22,10 @@
 %fine custom commands
 
 \begin{document}
+\author{Michele Lazzeri Matricola 822879}
+\title{Progetto di Algoritmi e Strutture Dati}
+\date{}
+\maketitle
 \section{Traduzione da Linguaggio di contesto a Linguaggio specifico}
 I "nucleotidi" {A,T,C,G} rappresentano un Alfabeto $\Sigma$. Una concatenazione di simboli dell'Alfabeto rappresenta una Stringa fr e nel contesto viene chiamato "Frammento di DNA". L'insieme di tutti i "Frammenti di DNA" ammissibili {\large F} rappresenta quindi il Linguaggio.
 
@@ -63,7 +70,7 @@ Tali funzioni possono essere implementate tramite un costrutto \begin{verbatim}
 \begin{itemize}
 \item Tempo di accesso proporzionale alla lunghezza dell'albero: tale tempo nel caso peggiore si rivela essere ugualmente $O(n)$, ma nel caso medio il tempo scende a $O(log(n))$, dove n è il numero di enzimi presenti.
 \item Tempo di inserimento in qualsiasi posizione: $O(n)$ nel caso peggiore, $O(log(n))$ nel caso medio
-\end{itemize} I singoli nodi possono essere strutture formate da un puntatore a funzione, una stringa identificatrice e un intero per l'energia richiesta.
+\end{itemize} I singoli nodi possono essere strutture formate da un puntatore a funzione, una stringa identificativa e un intero per l'energia richiesta. Tale libreria fornisce le funzioni char *enzima(char *nome-enzima, char *frammento) e int energia-enzima(char *nome-enzima).
 Per ridurre il tempo a $O(log(n))$ anche nel caso peggiore si potrebbe ricorrere a una struttura come un albero 2-3 o un B-albero, per semplicità verrà però usato un albero di ricerca binario.
 \subsection{Esperimento}
 L'intero esperimento può essere rappresentato tramite un grafo ordinato $G=<V,E>$ dove V sono i nodi (in questo caso le varie Stringhe / Frammenti di DNA) e E è un sottoinsieme del prodotto cartesiano $V\times V$ tale che $e = \{x,y\} \in E \iff \exists$ enzima $enz \mid enzima(enz,x)=y$
@@ -109,9 +116,9 @@ L(v) := INSERISCI(($\epsilon$,k))\;
 \end{algorithm}
 Dove $\varepsilon$ è l'insieme degli enzimi inseriti nell'esperimento, V è l'insieme dei nodi, L(v) è la lista di adiacenza del nodo v.
 
-Data la necessità, dopo l'ottenimento del risultato della funzione enzima($\epsilon$,stringa), di cercare se tale risultato è già presente nella lista dei nodi (in modo tale da creare un lato dalla stringa di origine al risultato, risulta comodo utilizzare anche per la lista dei nodi un albero binario di ricerca, per ridurre tali tempi di ricerca.
+Data la necessità, dopo l'ottenimento del risultato della funzione enzima($\epsilon$,stringa), di cercare se tale risultato è già presente nella lista dei nodi (in modo tale da creare un lato dalla stringa di origine al risultato) risulta comodo utilizzare anche per la lista dei nodi un albero binario di ricerca, per ridurre tali tempi di ricerca.
 
-L'implementazione scelta per la creazione del grafo risulta quindi essere formata da una struttura contenente due puntatori, uno all'albero contenente i frammenti (il grafo orientato vero e proprio) e un altro verso l'albero contenente gli enzimi inseriti nell'esperimento 
+L'implementazione scelta per la creazione del grafo risulta quindi essere formata da una struttura (che verrà chiamata Struct) contenente due puntatori, uno all'albero contenente i frammenti (il grafo orientato vero e proprio)(Albero\_{}Framm) e un altro verso l'albero contenente gli enzimi inseriti nell'esperimento (Albero\_{}Enz)
 \begin{itemize}
 \item l'albero contenente i frammenti avrà dei nodi formati da 5 campi: 
 \begin{itemize}
@@ -129,7 +136,7 @@ L'implementazione scelta per la creazione del grafo risulta quindi essere format
 \end{itemize}
 Anche per questi due alberi per ridurre il tempo di inserimento/ricerca/cancellazione a $O(log(n))$ anche nel caso peggiore si potrebbe ricorrere a una struttura come un albero 2-3 o un B-albero, ma per semplicità verrà usato un albero di ricerca binario.
 
-\section{Funzioni in pseudocodice}
+\section{Funzioni in pseudo-codice}
 \subsection{Crea\_{}Nuovo}
 Questa prima funzione crea semplicemente la struttura di base e inserisce nell'albero degli enzimi l'enzima nullo (di peso 1) rappresentante la non-interazione tra enzimi e frammenti:
 
@@ -141,50 +148,50 @@ Struct:= INSERISCI(Struct,(A,B))\;
 return Struct\;
 \end{algorithm}
 La procedura richiede un tempo O(1) dovendo semplicemente allocare spazio e inserire al primo posto di un albero senza vertici un nodo.
-\subsection{Cerca}
-Questa funzione cerca un nodo all'interno dell'albero binario di ricerca, se lo trova restituisce la coppia (1,\&{}nodo), se non lo trova restituisce la coppia (0,\&{}padre). In questo secondo caso l'inserimento non richiederà più di trovare il cammino fino ad una foglia, ma basterà confrontare l'elemento da inserire con padre e inserire quindi l'elemento come figlio destro o sinistro:
+\subsection{Cerca(el,rad)}
+Questa funzione cerca un nodo el all'interno di un albero binario di ricerca con radice rad, se lo trova restituisce la coppia (1,\&{}nodo), se non lo trova restituisce la coppia (0,\&{}padre). In questo secondo caso l'inserimento non richiederà più di trovare il cammino fino ad una foglia, ma basterà confrontare l'elemento da inserire con padre e inserire quindi l'elemento come figlio destro o sinistro:
 
 \begin{algorithm}[H]
 node:= rad\;
-\uIf {rad = frammento}{return 1,node\;}
-\uElseIf {rad < frammento}{
-\eIf {des(rad) $\neq$ NULL}{return cerca(frammento,des(rad))}{return 0,node\;}}
+\uIf {rad = el}{return 1,node\;}
+\uElseIf {rad < el}{
+\eIf {des(rad) $\neq$ NULL}{return cerca(el,des(rad))}{return 0,node\;}}
 \ElseIf {rad > frammento}{
-\eIf {sin(rad) $\neq$ NULL}{return cerca(frammento,sin(rad))}{return 0,node\;}}
+\eIf {sin(rad) $\neq$ NULL}{return cerca(el,sin(rad))}{return 0,node\;}}
 \end{algorithm}
 Tale procedura ricorsiva effettua un numero di chiamate proporzionale all'altezza dell'albero. Se l'albero è bilanciato l'altezza è dell'ordine di log(n) dove n è il numero dei nodi, se non lo è l'ordine è quello di n. La procedura richiede quindi un tempo $O(log(n))$ nel caso medio e $O(n)$ nel caso peggiore.
-\subsection{Nuovo\_{}Frammento}
+\subsection{Nuovo\_{}Frammento(frammento)}
 Questa procedura chiama inizialmente la procedura cerca, se cerca ritorna 1 allora la procedura si arresta, se ritorna 0 confronta il nodo ritornato da cerca con frammento e inserisce quest'ultimo come figlio sinistro o destro:
 
 \begin{algorithm}[H]
-(a,padre) := cerca(frammento,radice)\;
+(a,padre) := cerca(frammento,radice(Albero\_{}Framm))\;
 \If {a=0}{
 \eIf{padre > frammento}{sin(padre):= frammento}{des(padre):= frammento}
 }
 \end{algorithm}
 Il costo dell'inserimento risulta quindi tutto attribuito alla procedura cerca ed è quindi nuovamente dell'ordine di $O(n)$ nel caso peggiore e $O(log(n))$ nel caso medio.
-\subsection{Nuovo\_{}Frammento\_{}vis}
+\subsection{Nuovo\_{}Frammento\_{}vis(frammento)}
 Questa funzione, molto simile alla precedente, inserisce un frammento, ma con la differenza che nel caso in cui venga inserito un nuovo frammento imposta il campo visitato a 1 e restituisce un puntatore al nodo creato.
 
 \begin{algorithm}[H]
-(a,node) := cerca(frammento,radice)\;
+(a,node) := cerca(frammento,radice(Albero\_{}Framm))\;
 \If {a=0}{
 \eIf{padre > frammento}{sin(node):= (frammento,1)\;
 node:= sin(node)\;}{des(node):= (frammento,1)\;node:= des(node)}
 
 }return node\;
 \end{algorithm}
-\subsection{Nuovo\_{}Enzima}
+\subsection{Nuovo\_{}Enzima(enzima)}
 Questa funzione cerca l'enzima all'interno del corrispettivo albero, se lo trova lo attiva, se non lo trova crea un nuovo nodo con il flag attivato
 
 \begin{algorithm}[H]
-(a,padre) := cerca(enzima,radice)\;
+(a,padre) := cerca(enzima,radice(Albero\_{}Enz))\;
 \eIf {a=0}{
 \eIf{padre > enzima}{sin(padre):= (enzima,1)}{des(padre):= (enzima,1)}
 }{padre.attivato:= 1}
 \end{algorithm}
-\subsection{Cancella\_{}enz}
-Questa funzione elimina l'albero degli enzimi
+\subsection{Cancella\_{}enz(nodo)}
+Questa funzione elimina l'albero degli enzimi partendo dalla radice nodo
 
 \begin{algorithm}[H]
 \If{sin(nodo) $\neq$ NULL}{cancella\_{}enz(sin(nodo))}
@@ -192,8 +199,8 @@ Questa funzione elimina l'albero degli enzimi
 cancella nodo;
 \end{algorithm}
 Il numero delle chiamate è proporzionale al numero degli enzimi.
-\subsection{Cancella\_{}framm}
-Questa funzione elimina l'albero dei frammenti
+\subsection{Cancella\_{}framm(nodo)}
+Questa funzione elimina l'albero dei frammenti partendo dalla radice nodo
 
 \begin{algorithm}[H]
 \If{sin(nodo) $\neq$ NULL}{cancella\_{}enz(sin(nodo))}
@@ -202,7 +209,7 @@ Questa funzione elimina l'albero dei frammenti
 cancella nodo;
 \end{algorithm}
 Le chiamate sono proporzionali al numero totale di archi (per la cancellazione delle liste di adiacenza) e al numero di frammenti.
-\subsection{Elimina\_{}Enzima}
+\subsection{Elimina\_{}Enzima(enzima)}
 Questa funzione cerca nell'albero degli enzimi se è presente l'enzima e se lo è lo inibisce:
 
 \begin{algorithm}[H]
@@ -210,7 +217,7 @@ Questa funzione cerca nell'albero degli enzimi se è presente l'enzima e se lo �
 \If{a=1}{enzima.attivo:= 0}
 \end{algorithm}
 Anche per questo algoritmo la ricerca è la componente che determina il costo in tempo
-\subsection{Prepara\_{}Esperimento}
+\subsection{Prepara\_{}Esperimento(f\_{}file, e\_{}file)}
 Questa funzione ricrea la struttura di base e inserisce nei due alberi i frammenti e gli enzimi presi rispettivamente dai file f\_{}file e e\_{}file:
 
 \begin{algorithm}[H]
@@ -223,14 +230,16 @@ nuovo\_{}esperimento()\;
 
 
 \end{algorithm}
-\subsection{esp}\label{sec:esp}
+\subsection{esp(tempo)}\label{sec:esp}
 Questa funzione fa agire gli enzimi su ogni frammento e confronta i risultati con i frammenti già presenti, inserisce i nuovi frammenti e crea nelle liste di adiacenza i puntatori per i vari nodi adiacenti:
 
 \begin{algorithm}[H]
 \If{tempo > 0}{
 \For{t=1,2\dots{}tempo}{
 \For{f $\in$ Albero\_{}frammenti}{
+\If{f.visitato:= 1}{
 f.visitato:=0\;
+}
 }
 \For{f $\in$ Albero\_{}frammenti}{
 \If{f.visitato=0}{
@@ -240,13 +249,13 @@ z:= enzima(e,f)\;
 k:= nuovo\_{}Frammento\_{}vis(z)\;
 L(f):= INSERISCI(L(f),(en,k))\;
 }}
-f.visitato:= 1\;
+f.visitato:= 2\;
 }
 }
 }
 }
 \end{algorithm}
-Come si può notare, dato che l'inserimento di un nuovo frammento è all'interno di un ciclo for che scansiona tutti gli elementi dell'albero dei frammenti, se il frammento fosse inserito senza utilizzare il flag visitato la funzione andrebbe in Loop: supponendo ad esempio di avere il solo frammento "TAC" e l'enzima "Insertasi-1A" la procedura inserirebbe "TAAC", il ciclo for prenderebbe "TAAC" come altro frammento e ad esso applicherebbe nuovamente l'enzima e così via. Creando invece il campo visitato, i frammenti vengono impostati inizialmente a 0 e ogni frammento inserito avrà il flag visitato impostato a 1, non verrà quindi riselezionato dal ciclo for.
+Come si può notare, dato che l'inserimento di un nuovo frammento è all'interno di un ciclo for che scansiona tutti gli elementi dell'albero dei frammenti, se il frammento fosse inserito senza utilizzare il flag visitato la funzione andrebbe in Loop: supponendo ad esempio di avere il solo frammento "TAC" e l'enzima "Insertasi-1A" la procedura inserirebbe "TAAC", il ciclo for prenderebbe "TAAC" come altro frammento e ad esso applicherebbe nuovamente l'enzima e così via. Creando invece il campo visitato, i frammenti vengono impostati inizialmente a 0 e ogni frammento inserito avrà il flag visitato impostato a 1, non verrà quindi riselezionato dal ciclo for. Inoltre gli elementi a cui sono stati applicati gli enzimi al tempo n non andranno riconsiderati al tempo n+1 e il campo visitato assume il valore 2. 2 significa quindi che il frammento è già stato utilizzato nell'esperimento, 1 che sarà utilizzato nel prossimo "tempo" e 0 che deve essere utilizzato durante questo "tempo".
 
 Questa procedura richiede una grande quantità di tempo, infatti supponendo che gli enzimi creino sempre frammenti non esistenti:
 
@@ -266,18 +275,18 @@ e quindi \begin{displaymath}
 T(f,e,tempo) = O(f*log(e)*e^{tempo})
 \end{displaymath}
 
-\subsection{Esperimento}
+\subsection{Esperimento(tempo)}
 Questa funzione chiama esp(tempo) e ne stampa i risultati
 
 \begin{algorithm}[H]
 \If{tempo > =}{esp(tempo)}
 Stampa Albero\_{}Frammenti\;
 \end{algorithm}
-\subsection{Dijkstra(V,*funz,s)}
-Questa funzione, esempio di Algoritmo greedy data come istanza un grafo orientato pesato, crea tre vettori: il primo vettore specifica per ogni nodo v il costo del cammino minimo da f a v, il secondo specifica il nodo precedente nel cammino da f a v, il terzo vettore contiene stringhe indicanti il nome dell'ultimo lato nel cammino da f a v.
+\newpage\subsection{Dijkstra(V,*funz,s)}
+Questa funzione, esempio di Algoritmo greedy, data come istanza un grafo orientato pesato, crea tre vettori: il primo vettore C specifica per ogni nodo v il costo del cammino minimo da f a v, il secondo vettore P specifica il nodo precedente nel cammino da f a v, il terzo vettore N contiene stringhe indicanti il nome dell'ultimo lato nel cammino da f a v.
 
 \begin{algorithm}[H]
-D:=HEAP\;
+D:= HEAP\;
 D:= INSERT(D,s)\;
 \For{v $\in$ V}{C(v):= $\infty$\; P(v):= NULL}
 C(s):= 0\;
@@ -338,13 +347,13 @@ STAMPA S\;
 }
 \end{algorithm}
 \subsection{Similarità(f,g)}
-Questa funzione utilizza la programmazione dinamica per stabilire la similarità di due stringhe. In particolare vengono create due matrici, la prima serve per contenere i valori di similarità delle varie sottostringhe, la seconda per ritrovare le coppie formatesi.
+Questa funzione utilizza la programmazione dinamica per stabilire la similarità di due stringhe. In particolare vengono create due matrici, la prima serve per contenere i valori di similarità delle varie sotto-stringhe, la seconda per ritrovare le coppie formatesi.
 Supponendo di avere due stringhe s1,s2 di dimensione N1,N2 le due matrici avranno dimensione N1+1,N2+1. La matrice inizialmente sarà formata da valori del tipo
 $M_{j,k}$ = $\left\{\begin{array}{ll}1 & \mbox{se } s1[j-1]=s2[k-1]\\0 & else\end{array}\right.$
 Passando poi di cella in cella da sinistra a destra, dall'alto verso il basso viene poi fatto un calcolo sul massimo tra tre valori:
 $M_{j,k}$ = max $\left\{\begin{array}{l}M_{j-1,k-1}+M_{j,k}\\M_{j-1,k}\\M_{j,k-1}\end{array}\right.$
 
-In questo modo si sfrutta la programmazione dinamica, in quanto la risoluzione del problema viene suddivisa in sottoproblemi, che vengono utilizza più volte per la costruzione del risultato finale.
+In questo modo si sfrutta la programmazione dinamica, in quanto la risoluzione del problema viene suddivisa in sotto-problemi, che vengono utilizza più volte per la costruzione del risultato finale.
 
 \begin{algorithm}[H]
 \For{i=0,1...N1+1}{
@@ -357,9 +366,9 @@ M[0][i]:= 0;}
 b:=M[i-1][j]\;
 c:=M[i][j-1]\;
 M[i,j]=MASSIMO(a,b,c)\;
-\uIf{M[i][j]=a}{T[i][j]=diag;}
-\uElseIf{M[i][j]=b}{T[i][j]=s1-;}
-\Else{T[i][j]=s2-;}
+\uIf{M[i][j]=a}{T[i][j]="d";}
+\uElseIf{M[i][j]=b}{T[i][j]="1";}
+\Else{T[i][j]="2";}
 
 
 }
@@ -369,9 +378,9 @@ S:= STACK\;
 a:= N1\;
 b:= N2\;
 \While{a>0 $\land$ b>0}{
-\uIf{T[a][b]=diag}{a:=a-1\;b:=b-1\;
+\uIf{T[a][b]="d"}{a:=a-1\;b:=b-1\;
 \If{s1[a+1]=s2[b+1]}{S:=INSERISCI(S,s1[a+1])}}
-\uElseIf{T[a][b]=s1-}{a:=a-1\;}
+\uElseIf{T[a][b]="1"}{a:=a-1\;}
 \Else{b:=b-1;}
 }
 
