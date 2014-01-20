@@ -27,17 +27,17 @@
 \date{}
 \maketitle
 \section{Traduzione da Linguaggio di contesto a Linguaggio specifico}
-I "nucleotidi" {A,T,C,G} rappresentano un Alfabeto $\Sigma$. Una concatenazione di simboli dell'Alfabeto rappresenta una Stringa fr e nel contesto viene chiamato "Frammento di DNA". L'insieme di tutti i "Frammenti di DNA" ammissibili {\large F} rappresenta quindi il Linguaggio.
+I 'nucleotidi' {A,T,C,G} rappresentano un Alfabeto $\Sigma$. Una concatenazione di simboli dell'Alfabeto rappresenta una Stringa fr e nel contesto viene chiamato 'Frammento di DNA'. L'insieme di tutti i 'Frammenti di DNA' ammissibili {\large F} rappresenta quindi il Linguaggio.
 
-Un "enzima" rappresenta una funzione $\epsilon\colon F\to F$. L'"insieme degli enzimi" $\varepsilon$ rappresenta quindi una classe di funzioni di questo tipo.
+Un 'enzima' rappresenta una funzione $\epsilon\colon F\to F$. L''insieme degli enzimi' $\varepsilon$ rappresenta quindi una classe di funzioni di questo tipo.
 
-Una "trasformazione" rappresenta il risultato di un prodotto di funzioni.
+Una 'trasformazione' rappresenta il risultato di un prodotto di funzioni.
 
-Un "esperimento" rappresenta un insieme di stringhe fr e di enzimi $\epsilon$.
+Un 'esperimento' rappresenta un insieme di stringhe fr e di enzimi $\epsilon$.
 
-La "durata" $\Delta$ rappresenta il numero massimo di funzioni applicabili per ogni Stringa fr in ogni esperimento.
+La 'durata' $\Delta$ rappresenta il numero massimo di funzioni applicabili per ogni Stringa fr in ogni esperimento.
 
-L'"energia richiesta in UEA" rappresenta una funzione peso che associa ad ogni "enzima" $\varepsilon$ un numero reale: $energia(\varepsilon)\colon\epsilon\to\mathbb{R_+}$
+L''energia richiesta in UEA' rappresenta una funzione peso che associa ad ogni 'enzima' $\varepsilon$ un numero reale: $energia(\varepsilon)\colon\epsilon\to\mathbb{R_+}$
 \\Inoltre $\forall$ trasformazione t $=\{e_1,e_2,\dots,e_k\}$ abbiamo che $energia(t)=\sum_{j=1}^k energia(e_j)$
 
 \section{Scelta delle strutture adatte}
@@ -54,7 +54,7 @@ struct stringa {
     nome char[50];
     int lunghezza;
 }
-\end{verbatim} In questo modo è possibile inserire nuovi elementi alla fine dell'array senza dovere riallocare l'intera array (supponendo di non superare il limite dei 50 caratteri) in tempo O(1), il rovesciamento dell'array può essere effettuato tramite un array di appoggio in tempo O(n), l'eliminazione degli ultimi n elementi in un tempo O(1), l'eliminazione e l'inserimento di un elemento non alla fine dell'array possono comunque essere realizzati shiftando i vari elementi dell'array. La semplicità della struttura permette in ogni caso di implementare le varie funzioni (gli "enzimi") facilmente.
+\end{verbatim} In questo modo è possibile inserire nuovi elementi alla fine dell'array senza dovere riallocare l'intera array (supponendo di non superare il limite dei 50 caratteri) in tempo O(1), il rovesciamento dell'array può essere effettuato tramite un array di appoggio in tempo O(n), l'eliminazione degli ultimi n elementi in un tempo O(1), l'eliminazione e l'inserimento di un elemento non alla fine dell'array possono comunque essere realizzati shiftando i vari elementi dell'array. La semplicità della struttura permette in ogni caso di implementare le varie funzioni (gli 'enzimi') facilmente.
 
 \subsection{Libreria degli enzimi}
 La libreria degli enzimi raccoglie le varie funzioni disponibili per la manipolazione dei frammenti di DNA.
@@ -75,19 +75,19 @@ Per ridurre il tempo a $O(log(n))$ anche nel caso peggiore si potrebbe ricorrere
 \subsection{Esperimento}
 L'intero esperimento può essere rappresentato tramite un grafo ordinato $G=<V,E>$ dove V sono i nodi (in questo caso le varie Stringhe / Frammenti di DNA) e E è un sottoinsieme del prodotto cartesiano $V\times V$ tale che $e = \{x,y\} \in E \iff \exists$ enzima $enz \mid enzima(enz,x)=y$
 Convenzioni utilizzate: \begin{itemize}
-\item L'energia necessaria per ogni enzima è rappresentata dal peso del lato. \item La possibilità che non ad un frammento non si attacchi nessun enzima viene "emulata" tramite un enzima nullo che restituisce lo stesso frammento. All'interno del grafo tale lato viene raffigurato tramite un cappio.
+\item L'energia necessaria per ogni enzima è rappresentata dal peso del lato. \item La possibilità che non ad un frammento non si attacchi nessun enzima viene 'emulata' tramite un enzima nullo che restituisce lo stesso frammento. All'interno del grafo tale lato viene raffigurato tramite un cappio.
 
 \end{itemize}
 Ad esempio il grafo: \begin{figure}[htop]
 \centering\includegraphics[scale=0.5]{graph1.png}\end{figure}
 
 Rappresenta la situazione per cui:
-\begin{itemize}\item "TCAATG" può diventare "GTAACT" tramite l'enzima Rovesciasi di peso 4(che "rovescia" i frammenti) \item "TCAATG" può diventare "CAATG" tramite l'enzima troncasi-1 di peso 7
-\item "GTAACT" può diventare "TCAATG" tramite l'enzima rovesciasi di peso 4
-\item "TCAATG" resta "TCAATG" senza applicazione di enzimi
+\begin{itemize}\item 'TCAATG' può diventare 'GTAACT' tramite l'enzima Rovesciasi di peso 4(che 'rovescia' i frammenti) \item 'TCAATG' può diventare 'CAATG' tramite l'enzima troncasi-1 di peso 7
+\item 'GTAACT' può diventare 'TCAATG' tramite l'enzima rovesciasi di peso 4
+\item 'TCAATG' resta 'TCAATG' senza applicazione di enzimi
 \item \dots
 \end{itemize}
-Il tempo determina il numero di lati e di frammenti, infatti partendo dai frammenti \{"TCA","CTA"\} e dall'enzima Insertasi-1C i grafi al tempo 1 e al tempo 2 sono i seguenti:
+Il tempo determina il numero di lati e di frammenti, infatti partendo dai frammenti \{'TCA','CTA'\} e dall'enzima Insertasi-1C i grafi al tempo 1 e al tempo 2 sono i seguenti:
 \begin{figure}[htop]
 \centering\includegraphics[scale=0.5]{graph2.png}\end{figure}
 
@@ -255,7 +255,7 @@ f.visitato:= 2\;
 }
 }
 \end{algorithm}
-Come si può notare, dato che l'inserimento di un nuovo frammento è all'interno di un ciclo for che scansiona tutti gli elementi dell'albero dei frammenti, se il frammento fosse inserito senza utilizzare il flag visitato la funzione andrebbe in Loop: supponendo ad esempio di avere il solo frammento "TAC" e l'enzima "Insertasi-1A" la procedura inserirebbe "TAAC", il ciclo for prenderebbe "TAAC" come altro frammento e ad esso applicherebbe nuovamente l'enzima e così via. Creando invece il campo visitato, i frammenti vengono impostati inizialmente a 0 e ogni frammento inserito avrà il flag visitato impostato a 1, non verrà quindi riselezionato dal ciclo for. Inoltre gli elementi a cui sono stati applicati gli enzimi al tempo n non andranno riconsiderati al tempo n+1 e il campo visitato assume il valore 2. 2 significa quindi che il frammento è già stato utilizzato nell'esperimento, 1 che sarà utilizzato nel prossimo "tempo" e 0 che deve essere utilizzato durante questo "tempo".
+Come si può notare, dato che l'inserimento di un nuovo frammento è all'interno di un ciclo for che scansiona tutti gli elementi dell'albero dei frammenti, se il frammento fosse inserito senza utilizzare il flag visitato la funzione andrebbe in Loop: supponendo ad esempio di avere il solo frammento 'TAC' e l'enzima 'Insertasi-1A' la procedura inserirebbe 'TAAC', il ciclo for prenderebbe 'TAAC' come altro frammento e ad esso applicherebbe nuovamente l'enzima e così via. Creando invece il campo visitato, i frammenti vengono impostati inizialmente a 0 e ogni frammento inserito avrà il flag visitato impostato a 1, non verrà quindi riselezionato dal ciclo for. Inoltre gli elementi a cui sono stati applicati gli enzimi al tempo n non andranno riconsiderati al tempo n+1 e il campo visitato assume il valore 2. 2 significa quindi che il frammento è già stato utilizzato nell'esperimento, 1 che sarà utilizzato nel prossimo 'tempo' e 0 che deve essere utilizzato durante questo 'tempo'.
 
 Questa procedura richiede una grande quantità di tempo, infatti supponendo che gli enzimi creino sempre frammenti non esistenti:
 
@@ -303,7 +303,7 @@ N(u):= u.nome\_{}enzima\;
 return C,P,N\;
 \end{algorithm}
 Ricordo che la lista di adiacenza di un vertice è formata da nodi al cui interno è contenuto anche il nome del lato che è il nome dell'enzima.
-\subsection{Enzimi}
+\subsection{Enzimi(f,g,$\varepsilon$,tempo}
 Questa funzione elimina le strutture presenti, ricrea un esperimento, inserisce f come unico frammento, inserisce tutti gli enzimi nell'esperimento, chiama esp(tempo), calcola quindi il cammino minimo da f a g supponendo che gli archi abbiano tutti 1 come peso tramite l'algoritmo di Dijkstra e stampa il risultato
 
 \begin{algorithm}[H]
@@ -314,8 +314,8 @@ nuovo\_{}esperimento()\;
 nuovo\_{}Frammento(f)\;
 \For {e $\in$ $\varepsilon$}{Nuovo\_{}Enzima(e)}
 esp(tempo)\;
-(C,P,N)=dijkstra(rad,*(funzione(null)),f)\;
-\eIf{C(g)=$\infty$}{Stampa "Non ci sono cammini da f a g}{
+(C,P,N)=dijkstra(Albero\_{}Framm,*(funzione(null)),f)\;
+\eIf{C(g)=$\infty$}{Stampa 'Non ci sono cammini da f a g'}{
 S:= STACK\;
 \While{P(g) $\neq$ NULL}{
 S:= INSERT(S,N(g))\;
@@ -325,7 +325,7 @@ STAMPA S\;
 }
 \end{algorithm}
 Il tempo di esecuzione di questa funzione dipende dalle due chiamate esp(tempo) e dijkstra(\dots{}). 
-\subsection{Energia}
+\subsection{Energia(f,g,$\varepsilon '$,tempo)}
 Questa funzione fa praticamente la stessa cosa della precedente (cammini minimi) ma passa alla funzione Dijkstra un puntatore alla funzione energia\_{}enzima che restituisce l'ammontare in UEA per ogni enzima.
 
 \begin{algorithm}[H]
@@ -337,7 +337,7 @@ nuovo\_{}Frammento(f)\;
 \For {e $\in$ $\varepsilon'$}{Nuovo\_{}Enzima(e)}
 esp(tempo)\;
 (C,P,N)=dijkstra(rad,*(funzione(enzima)),f)\;
-\eIf{C(g)=$\infty$}{Stampa "Non ci sono cammini da f a g}{
+\eIf{C(g)=$\infty$}{Stampa 'Non ci sono cammini da f a g'}{
 S:= STACK\;
 \While{P(g) $\neq$ NULL}{
 S:= INSERT(S,N(g))\;
@@ -366,9 +366,9 @@ M[0][i]:= 0;}
 b:=M[i-1][j]\;
 c:=M[i][j-1]\;
 M[i,j]=MASSIMO(a,b,c)\;
-\uIf{M[i][j]=a}{T[i][j]="d";}
-\uElseIf{M[i][j]=b}{T[i][j]="1";}
-\Else{T[i][j]="2";}
+\uIf{M[i][j]=a}{T[i][j]='d';}
+\uElseIf{M[i][j]=b}{T[i][j]='1';}
+\Else{T[i][j]='2';}
 
 
 }
@@ -378,9 +378,9 @@ S:= STACK\;
 a:= N1\;
 b:= N2\;
 \While{a>0 $\land$ b>0}{
-\uIf{T[a][b]="d"}{a:=a-1\;b:=b-1\;
+\uIf{T[a][b]='d'}{a:=a-1\;b:=b-1\;
 \If{s1[a+1]=s2[b+1]}{S:=INSERISCI(S,s1[a+1])}}
-\uElseIf{T[a][b]="1"}{a:=a-1\;}
+\uElseIf{T[a][b]='1'}{a:=a-1\;}
 \Else{b:=b-1;}
 }
 
