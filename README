@@ -1,0 +1,20 @@
+Il file rel.pdf contiene la relazione e le funzioni richieste in pseudo codice.
+
+--
+
+L'ossatura dell'implementazione in C è dato dai file *.h e *.c
+
+Il file prog.h contiene la libreria da includere nel main dell'implementazione completa, è il file che riunisce le strutture sottostanti e implementa le funzioni che riguardano più strutture.
+
+bistenz.h contiene l'implementazione dell'albero utilizzato per contenere gli enzimi da utilizzare
+libenz.h contiene le funzioni per la gestione di tutti gli enzimi disponibili
+graph.h contiene l'implementazione del grafo ordinato sottoforma di albero binario di ricerca per i nodi e lista di adiacenza per la rappresentazione dei lati
+pqueue.h contiene l'implementazione della coda di priorità utilizzata dalla funzione dijkstra (contenuta in prog.h) per la ricerca del nodo con il cammino di costo minimo dalla sorgente
+stack.h contiene un'implementazione di uno stack utilizzato in varie procedure.
+
+
+Il file similarità.c contiene un implementazione funzionante dell'algoritmo utilizzato per la funzione similarita(f,g), basta modificare all'inizio del file le stringhe a e b e le rispettive lunghezze contenute nelle macro define
+
+Il file main.c contiene un possibile main, chiaramente non compila perchè manca la definizione delle varie funzioni.
+
+Il file Workflow contiene alcuni esempi di input e analizza come viene generato il grafo.
