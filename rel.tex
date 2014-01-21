@@ -293,7 +293,7 @@ C(s):= 0\;
 \While{ISEMPTY(D)=0}{
 g:= nodo tale che C(nodo) sia minore\;
 D:= DELETE(D,g)\;
-\For{u $\in$ L(g) $\land$ C(g)+(*funz)(u.nome\_{}enzima) < 0}{
+\For{u $\in$ L(g) $\land$ C(g)+(*funz)(u.nome\_{}enzima) < C(u)}{
 \If{C(u)=$\infty$}{D:= INSERT(D,u)}
 C(u):= C(g)+(*funz)(u.nome\_{}enzima)\;
 P(u):= g\;
@@ -302,7 +302,7 @@ N(u):= u.nome\_{}enzima\;
 }
 return C,P,N\;
 \end{algorithm}
-Ricordo che la lista di adiacenza di un vertice è formata da nodi al cui interno è contenuto anche il nome del lato che è il nome dell'enzima.
+Ricordo che la lista di adiacenza di un vertice è formata da nodi al cui interno è contenuto anche il nome del lato che è il nome dell'enzima. La scelta del nodo tale che C(nodo) sia minore può inoltre avvalersi di una coda di priorità in cui il costo rappresenta la priorità. In questo modo la scelta dell'elemento per cui C(elemento) sia minore può essere fatta in un tempo $O(1)$.
 \subsection{Enzimi(f,g,$\varepsilon$,tempo}
 Questa funzione elimina le strutture presenti, ricrea un esperimento, inserisce f come unico frammento, inserisce tutti gli enzimi nell'esperimento, chiama esp(tempo), calcola quindi il cammino minimo da f a g supponendo che gli archi abbiano tutti 1 come peso tramite l'algoritmo di Dijkstra e stampa il risultato
 
@@ -348,12 +348,13 @@ STAMPA S\;
 \end{algorithm}
 \subsection{Similarità(f,g)}
 Questa funzione utilizza la programmazione dinamica per stabilire la similarità di due stringhe. In particolare vengono create due matrici, la prima serve per contenere i valori di similarità delle varie sotto-stringhe, la seconda per ritrovare le coppie formatesi.
-Supponendo di avere due stringhe s1,s2 di dimensione N1,N2 le due matrici avranno dimensione N1+1,N2+1. La matrice inizialmente sarà formata da valori del tipo
-$M_{j,k}$ = $\left\{\begin{array}{ll}1 & \mbox{se } s1[j-1]=s2[k-1]\\0 & else\end{array}\right.$
+Supponendo di avere due stringhe s1,s2 di dimensione N1,N2 le due matrici avranno dimensione N1+1,N2+1.
 Passando poi di cella in cella da sinistra a destra, dall'alto verso il basso viene poi fatto un calcolo sul massimo tra tre valori:
-$M_{j,k}$ = max $\left\{\begin{array}{l}M_{j-1,k-1}+M_{j,k}\\M_{j-1,k}\\M_{j,k-1}\end{array}\right.$
+$M_{j,k}$ = max $\left\{\begin{array}{l}\left\{\begin{array}{ll}M_{j-1,k-1}+1 & \mbox{se }s1[j]=s2[k]\\M_{j-1,k-1} & else\end{array}\right.\\M_{j-1,k}\\M_{j,k-1}\end{array}\right.$
 
-In questo modo si sfrutta la programmazione dinamica, in quanto la risoluzione del problema viene suddivisa in sotto-problemi, che vengono utilizza più volte per la costruzione del risultato finale.
+In questo modo si sfrutta la programmazione dinamica, in quanto la risoluzione del problema viene suddivisa in sotto-problemi, che vengono utilizzati più volte per la costruzione del risultato finale.
+
+Per la costruzione del risultato finale l'algoritmo parte dall posizione $T_{N1,N2}$, poi se trova una 'd' controlla se s1[j]=s2[k] se si inserisce tale valore in uno stack, se trova un '1' si sposta verso l'alto, se trova un '2' si sposta verso sinistra. Quando uno dei due valori raggiunge 0 stampa la pila.
 
 \begin{algorithm}[H]
 \For{i=0,1...N1}{
