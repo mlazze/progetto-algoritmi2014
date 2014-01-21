@@ -75,7 +75,7 @@ Per ridurre il tempo a $O(log(n))$ anche nel caso peggiore si potrebbe ricorrere
 \subsection{Esperimento}
 L'intero esperimento può essere rappresentato tramite un grafo ordinato $G=<V,E>$ dove V sono i nodi (in questo caso le varie Stringhe / Frammenti di DNA) e E è un sottoinsieme del prodotto cartesiano $V\times V$ tale che $e = \{x,y\} \in E \iff \exists$ enzima $enz \mid enzima(enz,x)=y$
 Convenzioni utilizzate: \begin{itemize}
-\item L'energia necessaria per ogni enzima è rappresentata dal peso del lato. \item La possibilità che non ad un frammento non si attacchi nessun enzima viene 'emulata' tramite un enzima nullo che restituisce lo stesso frammento. All'interno del grafo tale lato viene raffigurato tramite un cappio.
+\item L'energia necessaria per ogni enzima è rappresentata dal peso del lato. \item La possibilità che ad un frammento non si attacchi nessun enzima viene 'emulata' tramite un enzima nullo che restituisce lo stesso frammento. All'interno del grafo tale lato viene raffigurato tramite un cappio.
 
 \end{itemize}
 Ad esempio il grafo: \begin{figure}[htop]
@@ -124,7 +124,7 @@ L'implementazione scelta per la creazione del grafo risulta quindi essere format
 \begin{itemize}
 \item Il frammento di DNA, implementato come descritto in \ref{sec:fram};
 \item Due puntatori, uno al figlio sinistro e uno al figlio destro
-\item Un puntatore alla lista di adiacenza
+\item Un puntatore alla lista di adiacenza (ogni elemento di tale lista sarà formata da un campo nome, che conterrà il nome dell'enzima, e un puntatore al frammento risultante dall'applicazione dell'enzima sul frammento originario)
 \item Un valore booleano che indica se tale nodo è stato visitato o meno (spiegazione in \ref{sec:esp})
 \end{itemize}
 \item l'albero contenente gli enzimi inseriti avrà dei nodi formati da 4 campi:
@@ -257,7 +257,7 @@ f.visitato:= 2\;
 \end{algorithm}
 Come si può notare, dato che l'inserimento di un nuovo frammento è all'interno di un ciclo for che scansiona tutti gli elementi dell'albero dei frammenti, se il frammento fosse inserito senza utilizzare il flag visitato la funzione andrebbe in Loop: supponendo ad esempio di avere il solo frammento 'TAC' e l'enzima 'Insertasi-1A' la procedura inserirebbe 'TAAC', il ciclo for prenderebbe 'TAAC' come altro frammento e ad esso applicherebbe nuovamente l'enzima e così via. Creando invece il campo visitato, i frammenti vengono impostati inizialmente a 0 e ogni frammento inserito avrà il flag visitato impostato a 1, non verrà quindi riselezionato dal ciclo for. Inoltre gli elementi a cui sono stati applicati gli enzimi al tempo n non andranno riconsiderati al tempo n+1 e il campo visitato assume il valore 2. 2 significa quindi che il frammento è già stato utilizzato nell'esperimento, 1 che sarà utilizzato nel prossimo 'tempo' e 0 che deve essere utilizzato durante questo 'tempo'.
 
-Questa procedura richiede una grande quantità di tempo, infatti supponendo che gli enzimi creino sempre frammenti non esistenti:
+Questa procedura è una delle più dispendiose in termini di tempo dell'intero progetto, infatti supponendo che gli enzimi creino sempre frammenti non esistenti:
 
 indicando con $|F|$ il numero dei frammenti iniziali e con $|E|$ il numero degli enzimi attivati la procedura richiede:
 \begin{itemize}
@@ -283,7 +283,7 @@ Questa funzione chiama esp(tempo) e ne stampa i risultati
 Stampa Albero\_{}Frammenti\;
 \end{algorithm}
 \newpage\subsection{Dijkstra(V,*funz,s)}
-Questa funzione, esempio di Algoritmo greedy, data come istanza un grafo orientato pesato, crea tre vettori: il primo vettore C specifica per ogni nodo v il costo del cammino minimo da f a v, il secondo vettore P specifica il nodo precedente nel cammino da f a v, il terzo vettore N contiene stringhe indicanti il nome dell'ultimo lato nel cammino da f a v.
+Questa funzione, esempio di Algoritmo greedy, data come istanza un grafo orientato pesato, crea tre vettori: il primo vettore C specifica per ogni nodo v il costo del cammino minimo da f a v, il secondo vettore P specifica il nodo precedente nel cammino da f a v, il terzo vettore N contiene stringhe indicanti il nome dell'ultimo lato nel cammino da f a v. Ad ogni passo viene scelto il lato {u,v} con peso minore e viene inserito nella soluzione a patto che non esista già un cammino con peso minore dalla sorgente a v.
 
 \begin{algorithm}[H]
 D:= HEAP\;
@@ -314,7 +314,7 @@ nuovo\_{}esperimento()\;
 nuovo\_{}Frammento(f)\;
 \For {e $\in$ $\varepsilon$}{Nuovo\_{}Enzima(e)}
 esp(tempo)\;
-(C,P,N)=dijkstra(Albero\_{}Framm,*(funzione(null)),f)\;
+(C,P,N)=dijkstra(Albero\_{}Framm,*(funzione(Funzione\_{}che\_{}ritorna\_{}1)),f)\;
 \eIf{C(g)=$\infty$}{Stampa 'Non ci sono cammini da f a g'}{
 S:= STACK\;
 \While{P(g) $\neq$ NULL}{
@@ -336,7 +336,7 @@ nuovo\_{}esperimento()\;
 nuovo\_{}Frammento(f)\;
 \For {e $\in$ $\varepsilon'$}{Nuovo\_{}Enzima(e)}
 esp(tempo)\;
-(C,P,N)=dijkstra(rad,*(funzione(enzima)),f)\;
+(C,P,N)=dijkstra(rad,*(funzione(energia\_{}enzima)),f)\;
 \eIf{C(g)=$\infty$}{Stampa 'Non ci sono cammini da f a g'}{
 S:= STACK\;
 \While{P(g) $\neq$ NULL}{
@@ -356,16 +356,16 @@ $M_{j,k}$ = max $\left\{\begin{array}{l}M_{j-1,k-1}+M_{j,k}\\M_{j-1,k}\\M_{j,k-1
 In questo modo si sfrutta la programmazione dinamica, in quanto la risoluzione del problema viene suddivisa in sotto-problemi, che vengono utilizza più volte per la costruzione del risultato finale.
 
 \begin{algorithm}[H]
-\For{i=0,1...N1+1}{
+\For{i=0,1...N1}{
 M[i][0]:= 0;}
-\For{i=0,1...N2+1}{
+\For{i=0,1...N2}{
 M[0][i]:= 0;}
-\For{i=1,2...N1+1}{
-\For{j=1,2...N2+1}{
-\eIf{s1[i-1]=s2[j-1]}{a:=M[i-1][j-1]+1;}{a:=M[i-1][j-1]}
+\For{i=1,2...N1}{
+\For{j=1,2...N2}{
+\eIf{s1[i-2]=s2[j-2]}{a:=M[i-1][j-1]+1;}{a:=M[i-1][j-1]}
 b:=M[i-1][j]\;
 c:=M[i][j-1]\;
-M[i,j]=MASSIMO(a,b,c)\;
+M[i][j]=MASSIMO(a,b,c)\;
 \uIf{M[i][j]=a}{T[i][j]='d';}
 \uElseIf{M[i][j]=b}{T[i][j]='1';}
 \Else{T[i][j]='2';}
@@ -379,7 +379,7 @@ a:= N1\;
 b:= N2\;
 \While{a>0 $\land$ b>0}{
 \uIf{T[a][b]='d'}{a:=a-1\;b:=b-1\;
-\If{s1[a+1]=s2[b+1]}{S:=INSERISCI(S,s1[a+1])}}
+\If{s1[a]=s2[b]}{S:=INSERISCI(S,s1[a])}}
 \uElseIf{T[a][b]='1'}{a:=a-1\;}
 \Else{b:=b-1;}
 }
