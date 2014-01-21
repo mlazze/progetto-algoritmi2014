@@ -1,14 +1,18 @@
 #include <stdio.h>
 #include <string.h>
-#define R 5
-#define C 7
+//Per testare un input modificare le prossime 4 righe, R è la lunghezza della stringa b, C è la lunghezza della stringa a
+#define C 8
+#define R 7
 
 char *a="GATTACA";
 char *b="TACCA";
 
 void printarrc(char arr[][C+1], int I, int J) {
-	printf("    G A T T A C A\n");
+	printf("    ");
 	int i,j;
+	for (i=0;i<C;i++)
+		printf("%c ",a[i]);
+	printf("\n");
 	for (i=0;i<I;i++) {
 		if (i>0) printf("%c ",b[i-1]);
 		else printf("  ");
@@ -20,8 +24,11 @@ void printarrc(char arr[][C+1], int I, int J) {
 }
 
 void printarr(int arr[][C+1], int I, int J) {
-	printf("    G A T T A C A\n");
+	printf("    ");
 	int i,j;
+	for (i=0;i<C;i++)
+		printf("%c ",a[i]);
+	printf("\n");
 	for (i=0;i<I;i++) {
 		if (i>0) printf("%c ",b[i-1]);
 		else printf("  ");

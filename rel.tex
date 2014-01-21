@@ -357,12 +357,12 @@ In questo modo si sfrutta la programmazione dinamica, in quanto la risoluzione d
 
 \begin{algorithm}[H]
 \For{i=0,1...N1}{
-M[i][0]:= 0;}
-\For{i=0,1...N2}{
 M[0][i]:= 0;}
-\For{i=1,2...N1}{
-\For{j=1,2...N2}{
-\eIf{s1[i-2]=s2[j-2]}{a:=M[i-1][j-1]+1;}{a:=M[i-1][j-1]}
+\For{i=0,1...N2}{
+M[i][0]:= 0;}
+\For{i=1,2...N2}{
+\For{j=1,2...N1}{
+\eIf{s2[i-1]=s1[j-1]}{a:=M[i-1][j-1]+1;}{a:=M[i-1][j-1]}
 b:=M[i-1][j]\;
 c:=M[i][j-1]\;
 M[i][j]=MASSIMO(a,b,c)\;
