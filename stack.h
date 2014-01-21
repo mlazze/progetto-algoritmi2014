@@ -1,9 +1,14 @@
+//la libreria per lo stack usato da varie funzioni
+
 #ifndef STACK_H
 #define STACK_H
 //Prototipi di funzioni per uno stack
 
 //definizione tipo stack
 typedef struct stack Stack;
+
+//definizione tipo Item(che andrà modificato in base alle esigenze)
+typedef int Item;
 
 //crea un nuovo stack e ne restituisce un puntatore
 Stack *stack_new();

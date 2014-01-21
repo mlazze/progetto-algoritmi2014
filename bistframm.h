@@ -1,6 +1,6 @@
 //funzioni per la gestione di un albero binario di ricerca
-#ifndef BIST_H
-#define BIST_H
+#ifndef BISTFRAMM_H
+#define BISTFRAMM_H
 
 typedef struct bit_node BNode;
 
